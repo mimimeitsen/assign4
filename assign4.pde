@@ -9,6 +9,7 @@ PImage start1;
 PImage start2;
 PImage end1;
 PImage end2;
+PImage shoot;
 
 //flames(assign 4)
 int numFrames=5;
@@ -60,8 +61,10 @@ boolean [] showImage3_2= new boolean [4];
 boolean [] showImage3_3= new boolean [4];
 boolean [] showImage3_4= new boolean [4];
 
-
-
+//shoot
+int Vshoot,Vshoot1;
+int numshoot;
+boolean [] shootshoot=new boolean [6]; 
 
 void setup () 
 
@@ -77,6 +80,7 @@ void setup ()
   start2=loadImage("img/start2.png");
   end1=loadImage("img/end1.png");
   end2=loadImage("img/end2.png");
+  shoot=loadImage("img/shoot.png");
   
   //flame
   for(int i=0; i<numFrames;i++){
@@ -121,6 +125,15 @@ void setup ()
   treasureY=floor(random(0,480));
   fighterX=floor(random(0,640));
   fighterY=floor(random(0,480));
+  
+  //shoot
+  Vshoot=0;
+  numshoot=0;
+  for(int i=0;i<5;i++){
+  shootshoot[i]=false;
+  }
+
+  
   
   //enemy
   enemyY1=floor(random(50,430));
@@ -185,30 +198,42 @@ switch(gamestate){
     fill(255,0,0);
     rect(41,25,a*19,19);
     image(hp,28,22);
-    
-    
-    //enemy 1
 
+
+    //shoot
+   for(int i=0;i<5;i++){
+      if(shootshoot[i]==true){
+        Vshoot--;
+        image(shoot,fighterX+Vshoot,fighterY); 
+        break;
+      }
+      
+      if(fighterX+Vshoot<0){
+        shootshoot[i]=false;
+        Vshoot=0;
+      }      
+     }
+      
     
+    //enemy 1    
     for(int i=0; i<5; i++){
       enemy1[i]%=4.5*width;
       enemy1[i]+=1;
-      
+            
       if (enemy1[i]>=4*width){
           enemyY1 = floor(random(0,430));
-          showImage1[i]=false;
-          
+          showImage1[i]=false;          
          }
           
       if(showImage1[i]==false ){
       enemy1[i+1]=enemy1[i]-SPACING;
       image(enemy,enemy1[i],enemyY1);
       
-      if(fighterX+25>=enemy1[i]&&
-          fighterX+25<=enemy1[i]+50&&
-          fighterY+25>=enemyY1&&
-          fighterY+25<=enemyY1+50){          
-           showImage1[i]=true;             
+      if(fighterX+51>=enemy1[i]&&
+          fighterX<=enemy1[i]+61&&
+          fighterY+51>=enemyY1&&
+          fighterY<=enemyY1+61){          
+           showImage1[i]=true;           
            int f=(currentFrame++)% numFrames;                          
            image(images[f],enemy1[i],enemyY1);
            if(HP[i]==false){
@@ -235,12 +260,12 @@ switch(gamestate){
       enemy2x[i+1]=enemy2x[i]-SPACING;
       enemy2y[i+1]=enemy2y[i]+SPACING;
       image(enemy,enemy2x[i]-1.5*width,enemy2y[i]+enemyY2);
-        if(fighterX>=enemy2x[i]-1.5*width-10&&
-          fighterX<=enemy2x[i]-1.5*width+50&&
-          fighterY>=enemy2y[i]+enemyY2-10&&
-          fighterY<=enemy2y[i]+50+enemyY2){            
+        if(fighterX+51>=enemy2x[i]-1.5*width&&
+          fighterX<=enemy2x[i]-1.5*width+61&&
+          fighterY+51>=enemy2y[i]+enemyY2&&
+          fighterY<=enemy2y[i]+61+enemyY2){            
            showImage2[i]=true;
-           int f=(currentFrame++)% numFrames;                          
+           int f=(currentFrame++ /30)% numFrames;                          
            image(images[f],enemy2x[i]-1.5*width,enemy2y[i]+enemyY2); 
            if(HP[i]==false){
              a-=2;
@@ -270,10 +295,10 @@ switch(gamestate){
       
       if(showImage3_1[i]==false){
       image(enemy,enemy3x[i]-3*width,enemy3y[i]+enemyY3);
-        if(fighterX>=enemy3x[i]-3*width-10&&
-        fighterX<=enemy3x[i]-3*width+50&&
-        fighterY>=enemy3y[i]+enemyY3-10&&
-        fighterY<=enemy3y[i]+50+enemyY3){  
+        if(fighterX+51>=enemy3x[i]-3*width&&
+        fighterX<=enemy3x[i]-3*width+61&&
+        fighterY+51>=enemy3y[i]+enemyY3&&
+        fighterY<=enemy3y[i]+61+enemyY3){  
         if(HP[i]==false){
              a-=2;
              HP[i]=true;
@@ -286,10 +311,10 @@ switch(gamestate){
       
       if(showImage3_2[i]==false){
       image(enemy,enemy3x[i]-3*width,enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3);
-        if(fighterX>=enemy3x[i]-3*width-10&&
-        fighterX<=enemy3x[i]-3*width+50&&
-        fighterY>=enemy3y[i]+enemyY3+2*abs(enemy3y[i]-enemy3y[0])-10&&
-        fighterY<=enemy3y[i]+enemyY3+2*abs(enemy3y[i]-enemy3y[0])+50){ 
+        if(fighterX+51>=enemy3x[i]-3*width&&
+        fighterX<=enemy3x[i]-3*width+61&&
+        fighterY+51>=enemy3y[i]+enemyY3+2*abs(enemy3y[i]-enemy3y[0])&&
+        fighterY<=enemy3y[i]+enemyY3+2*abs(enemy3y[i]-enemy3y[0])+61){ 
         if(HP[i]==false){
              a-=2;
              HP[i]=true;
@@ -303,10 +328,10 @@ switch(gamestate){
       
       if(showImage3_3[i]==false){
       image(enemy,enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width,enemy3y[i]+enemyY3);
-        if(fighterX>=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width-10&&
-        fighterX<=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width+50&&
-        fighterY>=enemy3y[i]+enemyY3-10&&
-        fighterY<=enemy3y[i]+50+enemyY3){     
+        if(fighterX+51>=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width&&
+        fighterX<=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width+61&&
+        fighterY+51>=enemy3y[i]+enemyY3&&
+        fighterY<=enemy3y[i]+61+enemyY3){     
         if(HP[i]==false){
              a-=2;
              HP[i]=true;
@@ -320,10 +345,10 @@ switch(gamestate){
       
       if(showImage3_4[i]==false){
       image(enemy,enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width,enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3);
-        if(fighterX>=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width-10&&
-        fighterX<=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width+50&&
-        fighterY>=enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3-10&&
-        fighterY<=enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3+50){  
+        if(fighterX+51>=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width&&
+        fighterX<=enemy3x[i]-2*abs(enemy3x[i]-enemy3x[2])-3*width+61&&
+        fighterY+51>=enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3&&
+        fighterY<=enemy3y[i]+2*abs(enemy3y[i]-enemy3y[0])+enemyY3+61){  
         if(HP[i]==false){
              a-=2;
              HP[i]=true;
@@ -335,7 +360,7 @@ switch(gamestate){
         }                                   
       }
     
-      }
+    }
     
     
     //teasure
@@ -346,10 +371,10 @@ switch(gamestate){
       treasureY=floor(random(60,400));
     }
     //treasure detection      
-    if( fighterX+25>=treasureX && 
-        fighterX+25<= treasureX+41 && 
-        fighterY+25 >= treasureY && 
-        fighterY+25<= treasureY+41)
+    if( fighterX+51>=treasureX && 
+        fighterX<= treasureX+41 && 
+        fighterY+51 >= treasureY && 
+        fighterY<= treasureY+41)
         {
         a+=1;
         treasureX=floor(random(50,580));
@@ -404,8 +429,13 @@ void keyPressed(){
         break;
     }
   }
-  
+  for(int i=0;i<5;i++){
+    if(keyCode==32){
+    shootshoot[i]=true;
+    }
+  }
 }
+
   
   void keyReleased(){
     if(key==CODED){
@@ -424,5 +454,8 @@ void keyPressed(){
         break;
       }
     }
+
   }
+  
+
   
